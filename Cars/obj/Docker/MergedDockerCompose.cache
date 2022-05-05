@@ -1,0 +1,38 @@
+networks:
+  weathernet:
+    driver: bridge
+services:
+  cars:
+    build:
+      context: D:\cars
+      dockerfile: Cars/Dockerfile
+    depends_on:
+      sqlserverService:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+    image: cars
+    networks:
+      weathernet: {}
+    ports:
+    - target: 80
+    - target: 443
+    volumes:
+    - C:\Users\┬хЄры№\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\┬хЄры№\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+  sqlserverService:
+    container_name: sqlserverService
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: BigPassw0rd1
+    hostname: sqlserverService
+    image: mcr.microsoft.com/mssql/server:latest
+    networks:
+      weathernet: {}
+    ports:
+    - published: 1433
+      target: 1433
+    volumes:
+    - D:\cars\data\mssql:/var/opt/mssql3:rw
+version: '3.4'
